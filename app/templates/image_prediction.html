@@ -512,8 +512,11 @@
 
           var formData = new FormData(this);
 
+          const url = "https://nsfwjs.onrender.com/nsfw"
+          // const url = "http://127.0.0.1:9000/nsfw"
+
           axios
-            .post("https://nsfwjs.onrender.com/nsfw", formData)
+            .post(url, formData)
             .then(function (response) {
               console.log(response.data);
 
@@ -526,30 +529,30 @@
 
               axios.defaults.headers.common["X-CSRFToken"] = getCSRFToken();
 
-              const drawing = response.data.filter(
-                (obj) => obj.className === "Drawing"
-              )[0].probability;
+              const drawing =  (response.data.filter((obj) => obj.className === "Drawing")[0]
+                  .probability * 100).toFixed(2)
+             
 
               formData.append("drawing", drawing);
               formData.append(
                 "neutral",
-                response.data.filter((obj) => obj.className === "Neutral")[0]
-                  .probability
+                (response.data.filter((obj) => obj.className === "Neutral")[0]
+                  .probability * 100).toFixed(2)
               );
               formData.append(
                 "sexy",
-                response.data.filter((obj) => obj.className === "Sexy")[0]
-                  .probability
+                (response.data.filter((obj) => obj.className === "Sexy")[0]
+                  .probability * 100).toFixed(2)
               );
               formData.append(
                 "porn",
-                response.data.filter((obj) => obj.className === "Porn")[0]
-                  .probability
+                (response.data.filter((obj) => obj.className === "Porn")[0]
+                  .probability * 100).toFixed(2)
               );
               formData.append(
                 "henai",
-                response.data.filter((obj) => obj.className === "Hentai")[0]
-                  .probability
+                (response.data.filter((obj) => obj.className === "Hentai")[0]
+                  .probability * 100).toFixed(2)
               );
               axios
                 .post("/save-data/", formData)
@@ -572,7 +575,7 @@
                     document.getElementById("imageContainer");
 
                   var information = document.createElement("h5")
-                  information.textContent = `neutral: ${response.data.neutral}, sexy: ${response.data.sexy}, porn: ${response.data.porn}, hentai: ${response.data.henai}`
+                  information.textContent = `neutral: ${response.data.neutral}, sexy: ${response.data.sexy}, porn: ${response.data.porn}, hentai: ${response.data.henai}, drawing: ${response.data.drawing}`
                   information.style.color = 'blue'
                   containerElement.appendChild(imageElement);
                   containerElement.appendChild(information)
